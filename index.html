@@ -93,6 +93,7 @@
             }
             return module.__exports[name];
         };
+        console.log("Module system initialized");
     </script>
     <script src="osu_to_lua.js"></script>
     <script>
@@ -112,8 +113,20 @@
                     selectedOptions.push($(this).val());
                 });
 
+                console.log("osu_file_str:", osu_file_str);
+                console.log("audio_id:", audio_id);
+                console.log("artist:", artist);
+                console.log("description:", description);
+                console.log("image:", image);
+                console.log("difficulty:", difficulty);
+                console.log("mapper:", mapper);
+                console.log("selectedOptions:", selectedOptions);
+
                 try {
-                    var result = module.require("osu_to_lua")(osu_file_str, audio_id, artist, description, image, difficulty, mapper, selectedOptions);
+                    var osuToLua = module.require("osu_to_lua");
+                    console.log("osuToLua function:", osuToLua);
+
+                    var result = osuToLua(osu_file_str, audio_id, artist, description, image, difficulty, mapper, selectedOptions);
                     $("#out").val(result);
                 } catch (error) {
                     console.error("Error during conversion:", error);
