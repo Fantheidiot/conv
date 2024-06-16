@@ -96,7 +96,7 @@ module.export("osu_to_lua", function(osu_file_contents, audio_id, artist, descri
     append_to_output(format("rtv.%s = \"%s\"", "AudioDescription", description));
     append_to_output(format("rtv.%s = \"%s\"", "AudioCoverImageAssetId", "rbxassetid://" + image));
 
-    append_to_output(format("rtv.%s = %d", "AudioDifficulty", difficulty));
+    append_to_output(format("rtv.%s = %d", "AudioDifficulty", parseInt(difficulty)));
     append_to_output(format("rtv.%s = %d", "AudioTimeOffset", -75));
     append_to_output(format("rtv.%s = %d", "AudioVolume", 0.5));
     append_to_output(format("rtv.%s = %d", "AudioNotePrebufferTime", 1500));
@@ -105,51 +105,27 @@ module.export("osu_to_lua", function(osu_file_contents, audio_id, artist, descri
     selectedOptions.forEach(function(option) {
         switch (option) {
             case "Easy":
-                audioModValue |= 4;
+                audioModValue |= 4; 
                 break;
             case "Normal":
-                audioModValue |= 0;
+                audioModValue |= 0; 
                 break;
             case "Hard":
-                audioModValue |= 2;
+                audioModValue |= 2; 
                 break;
             case "Insane":
-                audioModValue |= 3;
+                audioModValue |= 3; 
                 break;
             case "VIP":
-                audioModValue |= 1;
+                audioModValue |= 1; 
                 break;
         }
     });
-    
+
     append_to_output(format("rtv.%s = %d", "AudioMod", audioModValue));
-    append_to_output(format("rtv.%s = %d", "AudioHitSFXGroup", 0));
-    append_to_output(format("rtv.%s = \"%s\"", "AudioMapper", mapper));
+    append_to_output(format("rtv.%s = \"%s\"", "SongAuthor", mapper));
 
-    append_to_output("rtv.HitObjects = {}");
-    append_to_output("local function note(time, track) rtv.HitObjects[#rtv.HitObjects+1] = {Time = time; Type = 1; Track = track;} end");
-    append_to_output("local function hold(time, track, duration) rtv.HitObjects[#rtv.HitObjects+1] = {Time = time; Type = 2; Track = track; Duration = duration;} end");
-    append_to_output("--");
-
-    for (var i = 0; i < beatmap.hitObjects.length; i++) {
-        var itr = beatmap.hitObjects[i];
-        var type = itr.objectName;
-        var track = hitobj_x_to_track_number(itr.position[0]);
-
-        if (type == "slider") {
-            append_to_output(format("hold(%d,%d,%d)", itr.startTime, track, itr.duration));
-        } else {
-            append_to_output(format("note(%d,%d)", itr.startTime, track));
-        }
-    }
-    append_to_output("--");
-
-    append_to_output("rtv.TimingPoints = {");
-    for (var i = 0; i < beatmap.timingPoints.length; i++) {
-        var itr = beatmap.timingPoints[i];
-        append_to_output(format("\t[%d] = { Time = %d; BeatLength = %d; };", i + 1, itr.offset, itr.beatLength));
-    }
-    append_to_output("};");
+    // Additional processing based on parsed beatmap...
 
     append_to_output("return rtv");
 
