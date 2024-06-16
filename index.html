@@ -42,29 +42,29 @@ $(function(){
     <textarea id="in" style="width:1000px;height:200px"></textarea>
     <br/>
 
-	<a>audio id:</a>
-	<textarea id="audio" style="width:200px;height:10px"></textarea>
-	<br/>
+    <a>audio id:</a>
+    <textarea id="audio" style="width:200px;height:20px"></textarea>
+    <br/>
 
-	<a>artist:</a>
-	<textarea id="artist" style="width:200px;height:10px"></textarea>
-	<br/>
+    <a>artist:</a>
+    <textarea id="artist" style="width:200px;height:20px"></textarea>
+    <br/>
 
-	<a>description:</a><br/>
-	<textarea id="desc" style="width:200px;height:100px"></textarea>
-	<br/>
+    <a>description:</a><br/>
+    <textarea id="desc" style="width:200px;height:100px"></textarea>
+    <br/>
 
-	<a>image:</a>
-	<textarea id="image" style="width:200px;height:10px"></textarea>
-	<br/>
+    <a>image:</a>
+    <textarea id="image" style="width:200px;height:20px"></textarea>
+    <br/>
 
-	<a>difficulty:</a>
-	<textarea id="diff" style="width:200px;height:10px"></textarea>
-	<br/>
+    <a>difficulty:</a>
+    <textarea id="diff" style="width:200px;height:20px"></textarea>
+    <br/>
 
-	<a>mapper:</a>
-	<textarea id="mapper" style="width:200px;height:10px"></textarea>
-	<br/>
+    <a>mapper:</a>
+    <textarea id="mapper" style="width:200px;height:20px"></textarea>
+    <br/>
 
     <form>
         <label>
@@ -94,5 +94,31 @@ $(function(){
 
     <a>song file</a><br/>
     <textarea id="out" style="width:1000px;height:200px" readonly></textarea>
+
+    <script src="jquery.js"></script>
+    <script src="osu_to_lua.js"></script>
+    <script>
+        $(function(){
+            $("#submit").click(function(){
+                $("#out").val("converting...");
+                
+                var osu_file_str = $("#in").val();
+                var audio_id = $("#audio").val();
+                var artist = $("#artist").val();
+                var description = $("#desc").val();
+                var image = $("#image").val();
+                var difficulty = $("#diff").val();
+                var mapper = $("#mapper").val();
+                var selectedOptions = [];
+                $('input[name="difficulty"]:checked').each(function() {
+                    selectedOptions.push($(this).val());
+                });
+                
+                // Pass all inputs and selected options to the osu_to_lua function
+                $("#out").val(module.require("osu_to_lua")(osu_file_str, audio_id, artist, description, image, difficulty, mapper, selectedOptions));
+            });
+        });
+    </script>
 </body>
+</html>
 </html>
