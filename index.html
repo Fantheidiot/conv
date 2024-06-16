@@ -1,42 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ASCII">
+    <meta charset="UTF-8">
+    <title>osu! to Lua Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        button {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-<script>
-var module = {}
-module.__exports = {}
-module.export = function(name, obj) {
-	if (module.__exports[name] != null) {
-		throw "export already exists::"+name
-	}
-	module.__exports[name] = obj
-}
-module.require = function(name) {
-	if (module.__exports[name] == null) {
-		throw "require cannot find::"+name
-	}
-	return module.__exports[name]
-}
-</script>
-<script src="curves.js"></script>
-<script src="slidercalc.js"></script>
-<script src="osuparser.js"></script>
-<script src="format.js"></script>
-<script src="osu_to_lua.js"></script>
-
-<script src="jquery.js"></script>
-<script>
-$(function(){
-  $("#submit").click(function(){
-    $("#out").val("converting...")
-			var osu_file_str = $("#in").val()
-			$("#out").val(module.require("osu_to_lua")(osu_file_str))
-  })
-})
-</script>
-<a href="https://github.com/fantheidiot/conv">Source</a><br/>
+    <a href="https://github.com/fantheidiot/conv">Source</a><br/>
 
     <a>.osu contents</a><br/>
     <textarea id="in" style="width:1000px;height:200px"></textarea>
@@ -96,11 +78,27 @@ $(function(){
     <textarea id="out" style="width:1000px;height:200px" readonly></textarea>
 
     <script src="jquery.js"></script>
+    <script>
+        var module = {};
+        module.__exports = {};
+        module.export = function(name, obj) {
+            if (module.__exports[name] != null) {
+                throw "export already exists::" + name;
+            }
+            module.__exports[name] = obj;
+        };
+        module.require = function(name) {
+            if (module.__exports[name] == null) {
+                throw "require cannot find::" + name;
+            }
+            return module.__exports[name];
+        };
+    </script>
     <script src="osu_to_lua.js"></script>
     <script>
-        $(function(){
-            $("#submit").click(function(){
-                $("#out").val("");
+        $(function() {
+            $("#submit").click(function() {
+                $("#out").val("converting...");
                 
                 var osu_file_str = $("#in").val();
                 var audio_id = $("#audio").val();
@@ -113,12 +111,16 @@ $(function(){
                 $('input[name="difficulty"]:checked').each(function() {
                     selectedOptions.push($(this).val());
                 });
-                
-                // Pass all inputs and selected options to the osu_to_lua function
-                $("#out").val(module.require("osu_to_lua")(osu_file_str, audio_id, artist, description, image, difficulty, mapper, selectedOptions));
+
+                try {
+                    var result = module.require("osu_to_lua")(osu_file_str, audio_id, artist, description, image, difficulty, mapper, selectedOptions);
+                    $("#out").val(result);
+                } catch (error) {
+                    console.error("Error during conversion:", error);
+                    $("#out").val("Error during conversion: " + error);
+                }
             });
         });
     </script>
 </body>
-</html>
 </html>
